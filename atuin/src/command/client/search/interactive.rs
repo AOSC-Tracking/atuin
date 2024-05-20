@@ -1133,7 +1133,13 @@ pub async fn history(
     any(target_os = "windows", target_os = "macos", target_os = "linux")
 ))]
 fn set_clipboard(s: String) {
-    cli_clipboard::set_contents(s).unwrap();
+    use clipboard::{ClipboardContext, ClipboardProvider};
+    let ctx = ClipboardContext::new();
+
+    if let Ok(mut ctx) = ctx {
+        let _ = ctx.set_contents(s);
+        let _ = ctx.get_contents();   
+    }
 }
 
 #[cfg(not(all(
